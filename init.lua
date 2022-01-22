@@ -132,40 +132,6 @@ vim.api.nvim_exec([[
 vim.g.VimTodoListsUndoneItem = "- "
 vim.g.VimTodoListsDoneItem = "- "
 
--- require'compe'.setup {
---   enabled = true;
---   autocomplete = true;
---   debug = false;
---   min_length = 2;
---   preselect = 'enable';
---   throttle_time = 80;
---   source_timeout = 200;
---   incomplete_delay = 400;
---   max_abbr_width = 100;
---   max_kind_width = 100;
---   max_menu_width = 100;
---   documentation = true;
-
---   source = {
---     path = false;
---     buffer = true;
---     calc = true;
---     nvim_lsp = true;
---     nvim_lua = true;
---     vsnip = false;
---     ultisnips = false;
---   };
--- }
-
--- Use tab for autocomplete next-previous -- Breaks regular tab entry
--- vim.api.nvim_set_keymap(
---   "i",
---   "<Tab>",
---   'pumvisible() ? "<C-n>" : v:lua.check_backspace() ? "<Tab>" : "<C-r>=compe#complete()<CR>"',
---   {noremap = true, expr = true}
--- )
-
-
 ------------------------- Tree Sitter ------------------------------
 require'nvim-treesitter.configs'.setup {
   ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
@@ -180,3 +146,30 @@ require'nvim-treesitter.configs'.setup {
 
 
 require('galaxyline_config')
+
+
+
+-- lsp config should run from init.lua
+-- https://github.com/neovim/nvim-lspconfig/issues/1308
+local nvim_lsp = require("lspconfig")
+local on_attach = function(client, bufnr)
+	client.resolved_capabilities.document_formatting = false
+	-- Mappings.
+	local opts = { noremap=true, silent=true }
+	-- See `:help vim.lsp.*` for documentation on any of the below functions
+	-- buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+	vim.api.nvim_buf_set_keymap(bufnr, "n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>", opts)
+	vim.api.nvim_buf_set_keymap(bufnr, "n", "gD", "<Cmd>lua vim.lsp.buf.declaration()<CR>", opts)
+	vim.api.nvim_buf_set_keymap(bufnr, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", opts)
+	vim.api.nvim_buf_set_keymap(bufnr, "n", "gs", ":TSLspOrganize<CR>", {silent = true})
+	vim.api.nvim_buf_set_keymap(bufnr, "n", "qq", ":TSLspFixCurrent<CR>", {silent = true})
+	vim.api.nvim_buf_set_keymap(bufnr, "n", "gr", ":TSLspRenameFile<CR>", {silent = true})
+	vim.api.nvim_buf_set_keymap(bufnr, "n", "gi", ":TSLspImportAll<CR>", {silent = true})
+end
+
+local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+nvim_lsp.tsserver.setup {
+  on_attach = on_attach,
+  capabilities = capabilities
+}
+

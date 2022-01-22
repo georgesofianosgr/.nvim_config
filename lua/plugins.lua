@@ -86,9 +86,9 @@ return require('packer').startup({function()
 
 		use { "neovim/nvim-lspconfig",
 		  requires = {{'hrsh7th/cmp-nvim-lsp'}},
-			config = function() 
-				require('plugin_config/nvimlsp_config').setup()
-			end
+			-- config = function() 
+			-- 	require('plugin_config/nvimlsp_config').setup()
+			-- end
 		}-- Basic lsp setup
 		use { "dense-analysis/ale",
 			config = function() 
@@ -102,12 +102,12 @@ return require('packer').startup({function()
 		use "arcticicestudio/nord-vim" -- Nord theme
 	  use 'folke/tokyonight.nvim'
 		use "rakr/vim-one" -- Atom theme
-		use {"jose-elias-alvarez/nvim-lsp-ts-utils",
-			requires = { 
-				'nvim-lua/plenary.nvim', 
-				"jose-elias-alvarez/null-ls.nvim" 
-			}
-			} -- lsp tsserver setup
+		-- use {"jose-elias-alvarez/nvim-lsp-ts-utils",
+		-- 	requires = { 
+		-- 		'nvim-lua/plenary.nvim', 
+		-- 		"jose-elias-alvarez/null-ls.nvim" 
+		-- 	}
+		-- 	} -- lsp tsserver setup
 		-- use "jose-elias-alvarez/null-ls.nvim" -- setup eslint & prettier
 		use "dstein64/nvim-scrollview" -- Show scrollbar
 		use "aserebryakov/vim-todo-lists" -- Todo checbox list
