@@ -11,13 +11,13 @@ if fn.empty(fn.glob(install_path)) > 0 then
 end
 
 
-return require('packer').startup({function()
+return require('packer').startup({function(use)
 		use 'wbthomason/packer.nvim'
 
 		----- Default finder ----
-		use { 'camspiers/snap', 
+		use { 'camspiers/snap',
 			disable = not(isDefaultFinder("SNAP")),
-		  rocks = {'fzy'}, 
+		  rocks = {'fzy'},
 		  config = function() 
 				require('plugin_config/snap_config').setup()
 			end
@@ -54,11 +54,12 @@ return require('packer').startup({function()
 			end
 		} -- startup view
 
-		use { "sbdchd/neoformat",
-			config = function() 
-				require('plugin_config/neoformat_config').setup()
-			end
-		}
+    -- using null-ls instead
+		-- use { "sbdchd/neoformat",
+		-- 	config = function() 
+		-- 		require('plugin_config/neoformat_config').setup()
+		-- 	end
+		-- }
 
     -- use { "dgkf/blamer.nvim",  branch = "dev/virt-text-hl-mode" }
 		use { 
@@ -69,12 +70,21 @@ return require('packer').startup({function()
       end
     }
 		use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
-		-- use {
-		-- 	'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' },
-		-- 	config = function() 
-		-- 		require('gitsigns').setup() 
-		-- 	end
-		-- }
+		use {
+			'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' },
+			config = function() 
+				require('gitsigns').setup() 
+			end
+		}
+
+
+
+	  -- LSP
+	  use { "jose-elias-alvarez/null-ls.nvim", 
+      config = function()
+        require('plugin_config/null_ls_config').setup()
+      end
+    }
 	  use 'hrsh7th/cmp-nvim-lsp'
 	  use 'hrsh7th/cmp-buffer'
     use { "hrsh7th/nvim-cmp",
@@ -84,43 +94,39 @@ return require('packer').startup({function()
 			end
 		}
 
-		use { "neovim/nvim-lspconfig",
-		  requires = {{'hrsh7th/cmp-nvim-lsp'}},
-			-- config = function() 
-			-- 	require('plugin_config/nvimlsp_config').setup()
-			-- end
-		}-- Basic lsp setup
-		use { "dense-analysis/ale",
-			config = function() 
-				require('plugin_config/ale_config').setup()
-			end
-		}
-		-- use "mhinz/vim-startify"
-		-- use "nvim-lua/completion-nvim"
-		-- use 'hrsh7th/nvim-compe' -- Autocompletion plugin -- DEPRECATED -> setup is in init.lua, should move to own config (use nvim-cmp instead)
+		use "neovim/nvim-lspconfig"
+	  use {
+      'williamboman/nvim-lsp-installer',
+      config = function()
+       require('plugin_config/lsp_config').setup()
+      end
+    } -- Easy install LSPs
+		-- use { "dense-analysis/ale",
+		-- 	config = function() 
+		-- 		require('plugin_config/ale_config').setup()
+		-- 	end
+		-- }
+	
+
+
+
+
+
+
 		use "tpope/vim-commentary" -- comment plugin
 		use "arcticicestudio/nord-vim" -- Nord theme
 	  use 'folke/tokyonight.nvim'
 		use "rakr/vim-one" -- Atom theme
-		-- use {"jose-elias-alvarez/nvim-lsp-ts-utils",
-		-- 	requires = { 
-		-- 		'nvim-lua/plenary.nvim', 
-		-- 		"jose-elias-alvarez/null-ls.nvim" 
-		-- 	}
-		-- 	} -- lsp tsserver setup
-		-- use "jose-elias-alvarez/null-ls.nvim" -- setup eslint & prettier
 		use "dstein64/nvim-scrollview" -- Show scrollbar
 		use "aserebryakov/vim-todo-lists" -- Todo checbox list
 		use { -- Status Line
+		-- 'NTBBloodbath/galaxyline.nvim', -- FORKED until updated
 		'glepnir/galaxyline.nvim',
 			branch = 'main',
-			-- your statusline
-			-- config = function() require('galaxyline_config') end,
-			-- some optional icons
 			requires = {'kyazdani42/nvim-web-devicons', opt = true},
-			config = function() 
-        require('galaxyline_config')
-			end
+		  config = function () 
+		    require("plugin_config/galaxyline_config")
+      end
 		}
 		use "wellle/targets.vim"
 		use "tpope/vim-surround"
