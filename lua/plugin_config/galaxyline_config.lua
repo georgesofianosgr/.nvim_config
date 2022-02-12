@@ -271,17 +271,17 @@ galaxy.section.left[9] = {
   }
 }
 
-galaxy.section.right[1] = {
-	AleLintingStatus = {
-		provider = aleLinting,
-    highlight = {'#8FBCBB',colors.line_bg},
-    separator='  '
-		}
-}
+-- galaxy.section.right[1] = {
+-- 	AleLintingStatus = {
+-- 		provider = aleLinting,
+--     highlight = {'#8FBCBB',colors.line_bg},
+--     separator='  '
+-- 		}
+-- }
 
 galaxy.section.right[2] = {
 	DiagError = {
-		provider = aleError, -- diagnostic.get_diagnostic_error,
+		provider = diagnostic.get_diagnostic_error, -- aleError
 	    icon= ' ',
     highlight = {colors.red,colors.line_bg},
     separator='  '
@@ -290,7 +290,7 @@ galaxy.section.right[2] = {
 
 galaxy.section.right[3] = {
 	DiagWarn = {
-		provider = aleWarning, -- diagnostic.get_diagnostic_warn,
+		provider = diagnostic.get_diagnostic_warn, -- aleWarning,
 		icon= ' ',
     highlight = {colors.orange,colors.line_bg},
     separator='  '
@@ -299,20 +299,20 @@ galaxy.section.right[3] = {
 
 galaxy.section.right[4] = {
 	DiagInfo = {
-		provider = aleInfo, --diagnostic.get_diagnostic_info,
+		provider = diagnostic.get_diagnostic_info, -- aleInfo, 
 		icon= ' ',
     highlight = {colors.blue,colors.line_bg},
     separator='  '
 		}
 }
 
--- galaxy.section.right[4] = {
--- 	DiagHint = {
--- 		provider = diagnostic.get_diagnostic_hint,
--- 		icon= ' ',
---     highlight = {colors.blue,colors.line_bg},
--- 		}
--- }
+galaxy.section.right[4] = {
+	DiagHint = {
+		provider = diagnostic.get_diagnostic_hint,
+		icon= ' ',
+    highlight = {colors.blue,colors.line_bg},
+		}
+}
 
 galaxy.section.right[5] = {
 	LSPClient = {
@@ -321,4 +321,5 @@ galaxy.section.right[5] = {
     separator='  '
 		}
 }
+
 
