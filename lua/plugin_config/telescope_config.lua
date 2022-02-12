@@ -5,7 +5,7 @@ require('telescope').setup{
   -- defaults = { file_ignore_patterns = {"node_modules","bower_components"} },
   pickers = {
     find_files = {
-      find_command = { "fd", "--type", "f", "--strip-cwd-prefix", "-HI", "--exclude", ".git", "--exclude", "node_modules", "--exclude", "dist", "--exclude", ".vscode", "--exclude", "client/bower_components"  }
+      find_command = { "fd", "--type", "f", "--strip-cwd-prefix", "-HI", "--exclude", ".git", "--exclude", "node_modules", "--exclude", "dist", "--exclude", ".vscode", "--exclude", "client/bower_components", "--exclude", ".cache"    }
     },
   },
   extensions = {
