@@ -26,17 +26,7 @@ local module = {}
 
 local on_attach = function(client, bufnr)
 	client.resolved_capabilities.document_formatting = false
-
--- 	-- Format on save
--- 	if client.resolved_capabilities.document_formatting then
---         vim.api.nvim_exec([[
---          augroup LspAutocommands
---              autocmd! * <buffer>
---              autocmd BufWritePost <buffer> LspFormatting
---          augroup END
---          ]], true)
---     end
--- end
+	client.resolved_capabilities.document_range_formatting = false
 
 
 	-- Mappings.
@@ -59,18 +49,18 @@ end
 -- }
 -- local linters = {
 --     eslint = {
---         sourceName = "eslint",
+--         sourcename = "eslint",
 --         command = "eslint",
---         rootPatterns = {".eslintrc.js", "package.json"},
+--         rootpatterns = {".eslintrc.js", "package.json"},
 --         debounce = 100,
 --         args = {"--stdin", "--stdin-filename", "%filepath", "--format", "json"},
---         parseJson = {
---             errorsRoot = "[0].messages",
+--         parsejson = {
+--             errorsroot = "[0].messages",
 --             line = "line",
 --             column = "column",
---             endLine = "endLine",
---             endColumn = "endColumn",
---             message = "${message} [${ruleId}]",
+--             endline = "endline",
+--             endcolumn = "endcolumn",
+--             message = "${message} [${ruleid}]",
 --             security = "severity"
 --         },
 --         securities = {[2] = "error", [1] = "warning"}
@@ -79,7 +69,7 @@ end
 -- local formatters = {
 --     prettier = {command = "prettier", args = {"--stdin-filepath", "%filepath"}}
 -- }
--- local formatFiletypes = {
+-- local formatfiletypes = {
 --     typescript = "prettier",
 --     typescriptreact = "prettier"
 -- }
