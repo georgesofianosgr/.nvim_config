@@ -44,6 +44,7 @@ module.setup = function()
 		{ noremap = true, silent = true }
 	)
 	vim.api.nvim_set_keymap("n", "<C-f>", "<Cmd>Telescope live_grep<CR>", { noremap = true, silent = true })
+	vim.api.nvim_set_keymap("n", "<Leader>b", "<Cmd>Telescope buffers<CR>", { noremap = true, silent = true })
 end
 
 return module

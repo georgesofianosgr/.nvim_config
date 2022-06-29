@@ -93,6 +93,7 @@ return require("packer").startup({
 		})
 		use("hrsh7th/cmp-nvim-lsp")
 		use("hrsh7th/cmp-buffer")
+		use("SirVer/ultisnips")
 		use({
 			"hrsh7th/nvim-cmp",
 			requires = { { "hrsh7th/cmp-nvim-lsp", "hrsh7th/cmp-buffer" } },
@@ -116,7 +117,14 @@ return require("packer").startup({
 
 		use("tpope/vim-commentary") -- comment plugin
 		use("arcticicestudio/nord-vim") -- Nord theme
-		use("folke/tokyonight.nvim")
+		use({
+			"folke/tokyonight.nvim",
+			config = function()
+				vim.g.tokyonight_style = "night"
+				vim.cmd([[colorscheme tokyonight]])
+			end,
+		})
+		use("georgesofianosgr/onehalf-vim")
 		use("rakr/vim-one") -- Atom theme
 		use("dstein64/nvim-scrollview") -- Show scrollbar
 		use("aserebryakov/vim-todo-lists") -- Todo checbox list
@@ -132,6 +140,14 @@ return require("packer").startup({
 		use("wellle/targets.vim")
 		use("tpope/vim-surround")
 		use("psliwka/vim-smoothie")
+		-- use({
+		-- 	"TaDaa/vimade",
+		-- 	config = function()
+		-- 		vim.g.vimade = { fadelevel = 0.7, enablesigns = 1 }
+		-- 	end,
+		-- })
+
+		-- use("kkoomen/vim-doge") -- JSDOC produce
 	end,
 	config = {
 		display = {

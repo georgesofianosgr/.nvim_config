@@ -277,40 +277,40 @@ galaxy.section.left[9] = {
 -- 		}
 -- }
 
-galaxy.section.right[2] = {
-	DiagError = {
-		provider = diagnostic.get_diagnostic_error, -- aleError
-		icon = " ",
-		highlight = { colors.red, colors.line_bg },
-		separator = "  ",
-	},
-}
+-- galaxy.section.right[2] = {
+-- 	DiagError = {
+-- 		provider = diagnostic.get_diagnostic_error, -- aleError
+-- 		icon = " ",
+-- 		highlight = { colors.red, colors.line_bg },
+-- 		separator = "  ",
+-- 	},
+-- }
 
-galaxy.section.right[3] = {
-	DiagWarn = {
-		provider = diagnostic.get_diagnostic_warn, -- aleWarning,
-		icon = " ",
-		highlight = { colors.orange, colors.line_bg },
-		separator = "  ",
-	},
-}
+-- galaxy.section.right[3] = {
+-- 	DiagWarn = {
+-- 		provider = diagnostic.get_diagnostic_warn, -- aleWarning,
+-- 		icon = " ",
+-- 		highlight = { colors.orange, colors.line_bg },
+-- 		separator = "  ",
+-- 	},
+-- }
 
-galaxy.section.right[4] = {
-	DiagInfo = {
-		provider = diagnostic.get_diagnostic_info, -- aleInfo,
-		icon = " ",
-		highlight = { colors.blue, colors.line_bg },
-		separator = "  ",
-	},
-}
+-- galaxy.section.right[4] = {
+-- 	DiagInfo = {
+-- 		provider = diagnostic.get_diagnostic_info, -- aleInfo,
+-- 		icon = " ",
+-- 		highlight = { colors.blue, colors.line_bg },
+-- 		separator = "  ",
+-- 	},
+-- }
 
-galaxy.section.right[4] = {
-	DiagHint = {
-		provider = diagnostic.get_diagnostic_hint,
-		icon = " ",
-		highlight = { colors.blue, colors.line_bg },
-	},
-}
+-- galaxy.section.right[4] = {
+-- 	DiagHint = {
+-- 		provider = diagnostic.get_diagnostic_hint,
+-- 		icon = " ",
+-- 		highlight = { colors.blue, colors.line_bg },
+-- 	},
+-- }
 
 galaxy.section.right[5] = {
 	LSPClient = {

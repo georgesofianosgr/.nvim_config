@@ -49,7 +49,7 @@ local function setupBindings(bufnr)
 		bufnr,
 		"n",
 		"gh",
-		"<Cmd>lua vim.lsp.diagnostic.show_line_diagnostics({border = 'rounded'})<CR>",
+		"<Cmd>lua vim.diagnostic.open_float({border = 'rounded', source = 'always'})<CR>",
 		opts
 	)
 	vim.api.nvim_buf_set_keymap(bufnr, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", opts)
@@ -84,7 +84,26 @@ module.setup = function()
 	-- vim.fn.sign_define("DiagnosticSignHint",{texthl= "DiagnosticSignHint", text = "│", numhl=""})
 
 	vim.diagnostic.config({
-		virtual_text = true,
+		virtual_text = {
+			source = false,
+			format = function(diagnostic)
+				-- 	local prefix = ""
+				-- 	if diagnostic.severity == vim.diagnostic.severity.ERROR then
+				-- 		prefix = "🔥"
+				-- 	elseif diagnostic.severity == vim.diagnostic.severity.WARN then
+				-- 		prefix = "🚧"
+				-- 	else
+				-- 		prefix = "💬"
+				-- 	end
+				return string.format("%s (%s)", diagnostic.message, diagnostic.user_data.lsp.code)
+			end,
+		},
+		float = {
+			source = true,
+			format = function(diagnostic)
+				return string.format("%s (%s)", diagnostic.message, diagnostic.user_data.lsp.code)
+			end,
+		},
 		underline = true,
 		update_in_insert = false,
 		signs = true,
