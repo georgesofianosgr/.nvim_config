@@ -1,5 +1,25 @@
 vim.g.blamer_enabled = 1
-require("plugins")
+vim.g.mapleader = ","
+
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+	vim.fn.system({
+		"git",
+		"clone",
+		"--filter=blob:none",
+		"https://github.com/folke/lazy.nvim.git",
+		"--branch=stable", -- latest stable release
+		lazypath,
+	})
+end
+vim.opt.rtp:prepend(lazypath)
+
+require("lazy").setup("plugins")
+
+-- require("plugins")
+
+vim.opt.title = true
+vim.opt.titlestring = "%{substitute(getcwd(),$HOME,'~','')}"
 
 local api = vim.api
 
@@ -11,7 +31,6 @@ vim.opt.scrolloff = 5
 vim.opt.showtabline = 2
 vim.opt.laststatus = 3
 
-vim.g.mapleader = ","
 -- vim.opt.completeopt =  "menuone,noinsert,noselect"
 vim.opt.completeopt = { "menuone", "noselect" }
 
@@ -66,6 +85,9 @@ vim.o.copyindent = true
 vim.opt.swapfile = false
 vim.opt.backup = false
 
+-- command! Bnext if bufnr() != bufnr('$') | bnext | endif
+-- command! Bprev if bufnr() != 1 | bprev | endif
+
 -- Fixe bellow statement by maping Ctrl+c -> esc
 -- CTRL-C  Quit insert mode, go back to Normal mode.  Do not check for
 --      abbreviations.  Does not trigger the |InsertLeave| autocommand
@@ -96,6 +118,17 @@ api.nvim_set_keymap("v", "<leader>d", '"+d', { noremap = true, silent = true })
 api.nvim_set_keymap("n", "c", '"_c', { noremap = true, silent = true })
 api.nvim_set_keymap("n", "C", '"_C', { noremap = true, silent = true })
 api.nvim_set_keymap("v", "c", '"_c', { noremap = true, silent = true })
+
+api.nvim_set_keymap("t", "<ESC>", [[<C-\><C-n>]], { noremap = true })
+vim.api.nvim_set_keymap("t", "<C-d>", [[<C-\><C-n>]], { noremap = true })
+vim.api.nvim_set_keymap("t", "<C-f>", [[<C-\><C-d>]], { noremap = true })
+
+api.nvim_set_keymap("n", "<C-N>", ":bprevious<CR>", { noremap = true })
+api.nvim_set_keymap("n", "<C-P>", ":bnext<CR>", { noremap = true })
+
+api.nvim_set_keymap("n", "<leader>*", ':echo "hello"', { noremap = true, silent = false })
+-- nnoremap <C-N> :bnext<CR>
+-- nnoremap <C-P> :bprev<CR>
 
 -- Move between splits (<control> not working)
 -- api.nvim_set_keymap('n', "<control>j", ":wincmd j<CR>", { noremap = true, silent = true })
@@ -139,16 +172,16 @@ vim.api.nvim_exec(
 vim.g.VimTodoListsUndoneItem = "- "
 vim.g.VimTodoListsDoneItem = "- "
 
-------------------------- Tree Sitter ------------------------------
-require("nvim-treesitter.configs").setup({
-	ensure_installed = "all", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
-	highlight = {
-		enable = true, -- false will disable the whole extension
-	},
-	indent = {
-		enable = true,
-	},
-})
+-- ------------------------- Tree Sitter ------------------------------
+-- require("nvim-treesitter.configs").setup({
+--     ensure_installed = "all", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+--     highlight = {
+--         enable = true, -- false will disable the whole extension
+--     },
+--     indent = {
+--         enable = true,
+--     },
+-- })
 
 local function getExtension(buffer)
 	if buffer == nil then
@@ -225,6 +258,12 @@ function CreateStyled()
 	else
 		print("Styled file already exists")
 	end
+end
+
+function UpdateConfig()
+	vim.api.nvim_exec(":w ", false)
+	vim.api.nvim_exec(":luafile %", false)
+	vim.api.nvim_exec(":PackerCompile", false)
 end
 
 vim.api.nvim_set_keymap("n", "gst", "<Cmd>:lua ChangeStyled()<CR>", { noremap = true, silent = true })

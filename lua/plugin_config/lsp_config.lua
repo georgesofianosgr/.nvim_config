@@ -1,4 +1,3 @@
-local lsp_installer = require("nvim-lsp-installer")
 local module = {}
 
 local PUBLISH_DIAGNOSTICS = "textDocument/publishDiagnostics"
@@ -63,8 +62,13 @@ local on_attach = function(client, bufnr)
 	if client.name == "tsserver" then
 		local diagnostics_handler = client.handlers[PUBLISH_DIAGNOSTICS] or vim.lsp.handlers[PUBLISH_DIAGNOSTICS]
 		client.handlers[PUBLISH_DIAGNOSTICS] = make_diagnostics_handler(diagnostics_handler)
-		client.resolved_capabilities.document_formatting = false
-		client.resolved_capabilities.document_range_formatting = false
+		client.server_capabilities.documentFormattingProvider = false
+		client.server_capabilities.documentRangeFormattingProvider = false
+		-- client.resolved_capabilities.document_formatting = false
+		-- client.resolved_capabilities.document_range_formatting = false
+		client.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+			border = "rounded",
+		})
 	end
 	setupBindings(bufnr)
 end
@@ -72,36 +76,25 @@ end
 -- Register a handler that will be called for each installed server when it's ready (i.e. when installation is finished
 -- or if the server is already installed).
 module.setup = function()
+	require("mason").setup()
+	require("mason-lspconfig").setup()
+
 	vim.fn.sign_define("DiagnosticSignError", { texthl = "DiagnosticSignError", text = " ", numhl = "" })
 	vim.fn.sign_define("DiagnosticSignWarn", { texthl = "DiagnosticSignWarn", text = " ", numhl = "" })
 	vim.fn.sign_define("DiagnosticSignInfo", { texthl = "DiagnosticSignInfo", text = " ", numhl = "" })
 	vim.fn.sign_define("DiagnosticSignHint", { texthl = "DiagnosticSignHint", text = " ", numhl = "" })
-	-- vim.fn.sign_define("DiagnosticSignWarn",{texthl= "DiagnosticSignWarn", text = "❚", numhl=""})
-	--
-	-- vim.fn.sign_define("DiagnosticSignError",{texthl= "DiagnosticSignError", text = "│", numhl=""})
-	-- vim.fn.sign_define("DiagnosticSignWarn",{texthl= "DiagnosticSignWarn", text = "│", numhl=""})
-	-- vim.fn.sign_define("DiagnosticSignInfo",{texthl= "DiagnosticSignInfo", text = "│", numhl=""})
-	-- vim.fn.sign_define("DiagnosticSignHint",{texthl= "DiagnosticSignHint", text = "│", numhl=""})
 
 	vim.diagnostic.config({
 		virtual_text = {
 			source = false,
 			format = function(diagnostic)
-				-- 	local prefix = ""
-				-- 	if diagnostic.severity == vim.diagnostic.severity.ERROR then
-				-- 		prefix = "🔥"
-				-- 	elseif diagnostic.severity == vim.diagnostic.severity.WARN then
-				-- 		prefix = "🚧"
-				-- 	else
-				-- 		prefix = "💬"
-				-- 	end
-				return string.format("%s (%s)", diagnostic.message, diagnostic.user_data.lsp.code)
+				return string.format("%s (%s)", diagnostic.message, diagnostic.code)
 			end,
 		},
 		float = {
 			source = true,
 			format = function(diagnostic)
-				return string.format("%s (%s)", diagnostic.message, diagnostic.user_data.lsp.code)
+				return string.format("%s (%s)", diagnostic.message, diagnostic.code)
 			end,
 		},
 		underline = true,
@@ -115,29 +108,59 @@ module.setup = function()
 	-- vim.o.updatetime = 250
 	-- vim.cmd [[autocmd! CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})]]
 
-	local capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
-	lsp_installer.on_server_ready(function(server)
-		local opts = {
-			on_attach = on_attach,
-			capabilities = capabilities,
-		}
+	local capabilities = require("cmp_nvim_lsp").default_capabilities()
+	require("mason-lspconfig").setup_handlers({
+		-- default handler - setup with default settings
+		function(server_name)
+			local opts = {
+				on_attach = on_attach,
+				capabilities = capabilities,
+			}
 
-		if server.name == "sumneko_lua" then
-			opts = {
+			require("lspconfig")[server_name].setup(opts)
+		end,
+		-- you can override the default handler by providing custom handlers per server
+		["lua_ls"] = function()
+			-- todo rename sumneko_lua to lua_ls after mason-lspconfig changes name
+			require("lspconfig").lua_ls.setup({
 				on_attach = on_attach,
 				capabilities = capabilities,
 				settings = {
 					Lua = {
+						runtime = {
+							version = "Lua 5.1",
+						},
 						diagnostics = {
 							globals = { "vim" },
 						},
 					},
 				},
-			}
-		end
+			})
+		end,
+	})
 
-		server:setup(opts)
-	end)
+	-- lsp_installer.on_server_ready(function(server)
+	--   local opts = {
+	--     on_attach = on_attach,
+	--     capabilities = capabilities,
+	--   }
+
+	--   if server.name == "lua_ls" then
+	--     opts = {
+	--       on_attach = on_attach,
+	--       capabilities = capabilities,
+	--       settings = {
+	--         Lua = {
+	--           diagnostics = {
+	--             globals = { "vim" },
+	--           },
+	--         },
+	--       },
+	--     }
+	--   end
+
+	-- server:setup(opts)
+	-- end)
 end
 
 return module

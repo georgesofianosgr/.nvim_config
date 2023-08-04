@@ -1,0 +1,242 @@
+-- Install packer if not available
+local execute = vim.api.nvim_command
+local fn = vim.fn
+local install_path = fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
+if fn.empty(fn.glob(install_path)) > 0 then
+	fn.system({ "git", "clone", "https://github.com/wbthomason/packer.nvim", install_path })
+	execute("packadd packer.nvim")
+end
+
+return require("packer").startup({
+	function(use)
+		use("wbthomason/packer.nvim")
+
+		use({
+			"nvim-telescope/telescope.nvim",
+			tag = "0.1.1",
+			requires = { { "nvim-lua/popup.nvim" }, { "nvim-lua/plenary.nvim" } },
+			config = function()
+				require("plugin_config/telescope_config").setup()
+			end,
+		})
+		use({
+			"nvim-telescope/telescope-fzf-native.nvim",
+			run = "make",
+		})
+
+		-- Other
+		use({
+			"kyazdani42/nvim-tree.lua",
+			requires = { "kyazdani42/nvim-web-devicons" },
+			config = function()
+				require("plugin_config/nvimtree_config").setup()
+			end,
+		}) -- Nerd tree alternative for listing files
+
+		use({
+			"glepnir/dashboard-nvim",
+			event = "VimEnter",
+			config = function()
+				require("plugin_config/dashboard_config").setup()
+			end,
+		}) -- startup view
+
+		-- use({
+		-- 	-- '~/Development/repos/blamer.nvim',
+		-- 	"APZelos/blamer.nvim",
+		-- 	config = function()
+		-- 		vim.g.blamer_relative_time = 1
+		-- 	end,
+		-- })
+		use({
+			"nvim-treesitter/nvim-treesitter",
+			run = ":TSUpdate",
+			config = function()
+				require("plugin_config/treesitter_config").setup()
+			end,
+		})
+		use({
+			"lewis6991/gitsigns.nvim",
+			tag = "release",
+			requires = { "nvim-lua/plenary.nvim" },
+			config = function()
+				require("gitsigns").setup()
+			end,
+		})
+
+		-- LSP
+		use({
+			"jose-elias-alvarez/null-ls.nvim",
+			config = function()
+				require("plugin_config/null_ls_config").setup()
+			end,
+		})
+		use("hrsh7th/cmp-nvim-lsp")
+		use("hrsh7th/cmp-buffer")
+		use("SirVer/ultisnips")
+		use({
+			"hrsh7th/nvim-cmp",
+			requires = { { "hrsh7th/cmp-nvim-lsp", "hrsh7th/cmp-buffer" } },
+			config = function()
+				require("plugin_config/cmp_nvim_config").setup()
+			end,
+		})
+
+		use("onsails/lspkind.nvim")
+		use("williamboman/mason.nvim")
+		use("williamboman/mason-lspconfig.nvim")
+		use({
+			"neovim/nvim-lspconfig",
+			requires = { { "williamboman/mason.nvim", "williamboman/mason-lspconfig.nvim", "onsails/lspkind.nvim" } },
+			config = function()
+				require("plugin_config/lsp_config").setup()
+			end,
+		})
+
+		use("tpope/vim-commentary") -- comment plugin
+		use("arcticicestudio/nord-vim") -- Nord theme
+		use({
+			"folke/tokyonight.nvim",
+			config = function()
+				vim.cmd([[colorscheme tokyonight-night]])
+			end,
+		})
+		use("georgesofianosgr/onehalf-vim")
+		use("rakr/vim-one") -- Atom theme
+		use("kvrohit/mellow.nvim") -- Mellow theme
+		use("dstein64/nvim-scrollview") -- Show scrollbar
+		use("aserebryakov/vim-todo-lists") -- Todo checbox list
+		use({
+			-- Status Line
+			-- 'NTBBloodbath/galaxyline.nvim', -- FORKED until updated
+			"glepnir/galaxyline.nvim",
+			branch = "main",
+			requires = { "kyazdani42/nvim-web-devicons", opt = true },
+			config = function()
+				require("plugin_config/galaxyline_config")
+			end,
+		})
+		use("wellle/targets.vim")
+		use("tpope/vim-surround")
+		use("psliwka/vim-smoothie")
+		-- use("github/copilot.vim")
+		-- use({
+		-- 	"zbirenbaum/copilot-cmp",
+		-- 	config = function()
+		-- 		require("copilot_cmp").setup()
+		-- 	end,
+		-- })
+		--
+		-- use({
+		-- 	"TaDaa/vimade",
+		-- 	config = function()
+		-- 		vim.g.vimade = { fadelevel = 0.7, enablesigns = 1 }
+		-- 	end,
+		-- })
+
+		-- use("kkoomen/vim-doge") -- JSDOC produce
+		use({ "kevinhwang91/nvim-bqf", ft = "qf" }) -- quickfix list
+		-- use({ "akinsho/bufferline.nvim", tag = "v3.*", requires = "nvim-tree/nvim-web-devicons" })
+		use({
+			"j-hui/fidget.nvim",
+			requires = { { "neovim/nvim-lspconfig" } },
+			config = function()
+				require("fidget").setup()
+			end,
+		})
+
+		use({
+			"LinArcX/telescope-command-palette.nvim",
+			requires = { { "nvim-telescope/telescope.nvim" } },
+		})
+
+		use({
+			"tanvirtin/vgit.nvim",
+			requires = {
+				"nvim-lua/plenary.nvim",
+			},
+			config = function()
+				require("vgit").setup()
+			end,
+		})
+
+		use({
+			"lukas-reineke/indent-blankline.nvim",
+			config = function()
+				require("indent_blankline").setup({
+					-- for example, context is off by default, use this to turn it on
+					show_current_context = true,
+					show_current_context_start = false,
+				})
+			end,
+		})
+
+		-- Packer
+		use({
+			"folke/noice.nvim",
+			config = function()
+				require("noice").setup({
+					lsp = {
+						-- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+						override = {
+							["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+							["vim.lsp.util.stylize_markdown"] = true,
+							["cmp.entry.get_documentation"] = true,
+						},
+					},
+					-- you can enable a preset for easier configuration
+					presets = {
+						bottom_search = true, -- use a classic bottom cmdline for search
+						command_palette = true, -- position the cmdline and popupmenu together
+						long_message_to_split = true, -- long messages will be sent to a split
+						inc_rename = false, -- enables an input dialog for inc-rename.nvim
+						lsp_doc_border = false, -- add a border to hover docs and signature help
+					},
+				})
+			end,
+			requires = {
+				-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+				"MunifTanjim/nui.nvim",
+				-- OPTIONAL:
+				--   `nvim-notify` is only needed, if you want to use the notification view.
+				--   If not available, we use `mini` as the fallback
+				"rcarriga/nvim-notify",
+			},
+		})
+
+		-- use({
+		-- 	"folke/which-key.nvim",
+		-- 	config = function()
+		-- 		vim.o.timeout = true
+		-- 		vim.o.timeoutlen = 500
+
+		-- 		require("which-key").setup({
+		-- 			plugins = {
+		-- 				marks = false, -- shows a list of your marks on ' and `
+		-- 				registers = false, -- shows your registers on " in NORMAL or <C-r> in INSERT mode
+		-- 				spelling = {
+		-- 					enabled = false, -- enabling this will show WhichKey when pressing z= to select spelling suggestions
+		-- 					suggestions = 20, -- how many suggestions should be shown in the list?
+		-- 				},
+		-- 			},
+		-- 			presets = {
+		-- 				operators = false, -- adds help for operators like d, y, ... and registers them for motion / text object completion
+		-- 				motions = false, -- adds help for motions
+		-- 				text_objects = false, -- help for text objects triggered after entering an operator
+		-- 				windows = true, -- default bindings on <c-w>
+		-- 				nav = true, -- misc bindings to work with windows
+		-- 				z = false, -- bindings for folds, spelling and others prefixed with z
+		-- 				g = false, -- bindings for prefixed with g
+		-- 			},
+		-- 		})
+		-- 	end,
+		-- })
+	end,
+	config = {
+		display = {
+			open_fn = function()
+				return require("packer.util").float({ border = "single" })
+			end,
+		},
+	},
+})
