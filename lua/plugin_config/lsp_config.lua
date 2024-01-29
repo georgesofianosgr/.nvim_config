@@ -52,6 +52,7 @@ local function setupBindings(bufnr)
 		opts
 	)
 	vim.api.nvim_buf_set_keymap(bufnr, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", opts)
+	vim.api.nvim_buf_set_keymap(bufnr, "n", "gf", "<Cmd>lua vim.lsp.buf.format()<CR>", opts)
 	vim.api.nvim_buf_set_keymap(bufnr, "n", "gs", ":TSLspOrganize<CR>", { silent = true })
 	vim.api.nvim_buf_set_keymap(bufnr, "n", "qq", ":TSLspFixCurrent<CR>", { silent = true })
 	vim.api.nvim_buf_set_keymap(bufnr, "n", "gr", ":TSLspRenameFile<CR>", { silent = true })
@@ -138,6 +139,15 @@ module.setup = function()
 			})
 		end,
 	})
+
+	-- Add Max width to floating window (lsp hover K)
+	local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
+	function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
+		opts = opts or {}
+		opts.border = opts.border or "single"
+		opts.max_width = opts.max_width or 80
+		return orig_util_open_floating_preview(contents, syntax, opts, ...)
+	end
 
 	-- lsp_installer.on_server_ready(function(server)
 	--   local opts = {

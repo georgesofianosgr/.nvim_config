@@ -40,6 +40,8 @@ module.setup = function()
 					"client/bower_components",
 					"--exclude",
 					".cache",
+					"--exclude",
+					".next",
 				},
 			},
 			buffers = {

@@ -26,9 +26,24 @@ end
 
 return {
 	{
+		dir = "/Users/george/Development/repos/blamer.nvim",
+		config = function()
+			vim.g.blamer_enabled = 1
+			vim.g.blamer_show_in_visual_modes = 0
+			vim.g.blamer_show_in_insert_modes = 0
+			vim.g.blamer_show_in_replace_modes = 0
+			vim.g.blamer_delay = 500
+			vim.g.blamer_prefix = " "
+			vim.g.blamer_relative_time = 1
+		end,
+	},
+	"eliba2/vim-node-inspect",
+	{
 		"nvim-telescope/telescope.nvim",
-		tag = "0.1.1",
-		dependencies = { "nvim-lua/plenary.nvim" },
+		tag = "0.1.5",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+		},
 		config = function()
 			require("plugin_config.telescope_config").setup()
 		end,
@@ -85,11 +100,15 @@ return {
 
 	-- LSP
 	{
-		"jose-elias-alvarez/null-ls.nvim",
+		-- "jose-elias-alvarez/null-ls.nvim",
+		"nvimtools/none-ls.nvim",
 		config = function()
 			require("plugin_config/null_ls_config").setup()
 		end,
 	},
+	"hrsh7th/cmp-vsnip",
+	"hrsh7th/vim-vsnip",
+
 	-- "hrsh7th/cmp-nvim-lsp",
 	-- "hrsh7th/cmp-buffer",
 	-- "SirVer/ultisnips",
@@ -108,6 +127,9 @@ return {
 		"neovim/nvim-lspconfig",
 		dependencies = {
 			{ "williamboman/mason.nvim", "williamboman/mason-lspconfig.nvim", "onsails/lspkind.nvim" },
+		},
+		opts = {
+			inlay_hints = { enabled = true },
 		},
 		config = function()
 			require("plugin_config/lsp_config").setup()
@@ -147,48 +169,6 @@ return {
 		end,
 	},
 	{
-		"smoka7/multicursors.nvim",
-		event = "VeryLazy",
-		dependencies = {
-			"nvim-treesitter/nvim-treesitter",
-			"smoka7/hydra.nvim",
-		},
-		opts = function()
-			local N = require("multicursors.normal_mode")
-			local I = require("multicursors.insert_mode")
-			return {
-				hint_config = false,
-				normal_keys = {
-					-- to change default lhs of key mapping change the key
-					[","] = {
-						-- assigning nil to method exits from multi cursor mode
-						method = N.clear_others,
-						-- you can pass :map-arguments here
-						opts = { desc = "Clear others" },
-					},
-				},
-				insert_keys = {
-					-- to change default lhs of key mapping change the key
-					["<CR>"] = {
-						-- assigning nil to method exits from multi cursor mode
-						method = I.Cr_method,
-						-- you can pass :map-arguments here
-						opts = { desc = "New line" },
-					},
-				},
-			}
-		end,
-		cmd = { "MCstart", "MCvisual", "MCclear", "MCpattern", "MCvisualPattern", "MCunderCursor" },
-		keys = {
-			{
-				mode = { "v", "n" },
-				"<Leader>m",
-				"<cmd>MCstart<cr>",
-				desc = "Create a selection for selcted text or word under the cursor",
-			},
-		},
-	},
-	{
 		"nvim-lualine/lualine.nvim",
 		dependencies = { "nvim-tree/nvim-web-devicons", opt = true },
 		config = function()
@@ -209,13 +189,30 @@ return {
 	"wellle/targets.vim",
 	"tpope/vim-surround",
 	"psliwka/vim-smoothie",
-	-- use("github/copilot.vim")
-	-- use({
-	-- 	"zbirenbaum/copilot-cmp",
-	-- 	config = function()
-	-- 		require("copilot_cmp").setup()
-	-- 	end,
-	-- })
+	{
+		"mg979/vim-visual-multi",
+		branch = "master",
+	},
+	{
+		"zbirenbaum/copilot.lua",
+		config = function()
+			require("copilot").setup({
+				suggestion = {
+					auto_trigger = true,
+					accept = false,
+					-- accept = "<tab>",
+					-- accept_line = true,
+				},
+			})
+		end,
+	},
+	{
+		"zbirenbaum/copilot-cmp",
+		enabled = false,
+		config = function()
+			require("copilot_cmp").setup()
+		end,
+	},
 	--
 	-- use({
 	-- 	"TaDaa/vimade",
@@ -256,17 +253,20 @@ return {
 			"nvim-lua/plenary.nvim",
 		},
 		config = function()
-			require("vgit").setup()
+			require("vgit").setup({ settings = { live_blame = { enabled = false } } })
 		end,
 	},
 
 	{
 		"lukas-reineke/indent-blankline.nvim",
+		main = "ibl",
+		opts = {},
 		config = function()
-			require("indent_blankline").setup({
-				-- for example, context is off by default, use this to turn it on
-				show_current_context = true,
-				show_current_context_start = false,
+			require("ibl").setup({
+				scope = {
+					show_start = false,
+					show_end = false,
+				},
 			})
 		end,
 	},

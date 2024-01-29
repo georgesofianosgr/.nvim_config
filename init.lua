@@ -1,5 +1,12 @@
-vim.g.blamer_enabled = 1
 vim.g.mapleader = ","
+
+vim.g.blamer_enabled = 1
+vim.g.blamer_show_in_visual_modes = 1
+vim.g.blamer_show_in_insert_modes = 0
+vim.g.blamer_show_in_replace_modes = 0
+vim.g.blamer_delay = 300
+vim.g.blamer_prefix = " "
+vim.g.blamer_relative_time = 1
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -123,8 +130,8 @@ api.nvim_set_keymap("t", "<ESC>", [[<C-\><C-n>]], { noremap = true })
 vim.api.nvim_set_keymap("t", "<C-d>", [[<C-\><C-n>]], { noremap = true })
 vim.api.nvim_set_keymap("t", "<C-f>", [[<C-\><C-d>]], { noremap = true })
 
-api.nvim_set_keymap("n", "<C-N>", ":bprevious<CR>", { noremap = true })
-api.nvim_set_keymap("n", "<C-P>", ":bnext<CR>", { noremap = true })
+-- api.nvim_set_keymap("n", "<C-N>", ":bprevious<CR>", { noremap = true })
+-- api.nvim_set_keymap("n", "<C-P>", ":bnext<CR>", { noremap = true })
 
 api.nvim_set_keymap("n", "<leader>*", ':echo "hello"', { noremap = true, silent = false })
 -- nnoremap <C-N> :bnext<CR>
@@ -264,6 +271,13 @@ function UpdateConfig()
 	vim.api.nvim_exec(":w ", false)
 	vim.api.nvim_exec(":luafile %", false)
 	vim.api.nvim_exec(":PackerCompile", false)
+end
+
+function GoRun()
+	vim.api.nvim_exec(":split", false)
+	vim.api.nvim_exec(":wincmd j", false)
+	vim.api.nvim_exec(":terminal go run .", false)
+	vim.api.nvim_exec(":normal i ", false)
 end
 
 vim.api.nvim_set_keymap("n", "gst", "<Cmd>:lua ChangeStyled()<CR>", { noremap = true, silent = true })
